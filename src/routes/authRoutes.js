@@ -4,6 +4,8 @@ import User from "../models/User.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
+import crypto from "crypto";
+import sendVerificationEmail from "../utils/sendVerificationEmail.js";
 
 const router = express.Router();
 router.use(cookieParser());
@@ -30,7 +32,14 @@ router.post(
       }
 
       const user = await User.create({ username, email, password });
-      res.status(201).json({ message: "User registered successfully", user: { username, email } });
+
+      const verificationToken = crypto.randomBytes(20).toString("hex");
+      user.verificationToken = verificationToken;
+      await user.save();
+
+      await sendVerificationEmail(user, verificationToken);
+
+      res.status(201).json({ message: "User registered successfully. Please check your email to verify your account." });
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: "Server error" });
@@ -79,5 +88,28 @@ router.post(
     }
   }
 );
+
+router.get("/verify-email", async (req, res) => {
+  const { token } = req.query;
+  if (!token) {
+    return res.status(400).json({ message: "Invalid token" });
+  }
+
+  try {
+    const user = await User.findOne({ verificationToken: token });
+    if (!user) {
+      return res.status(400).json({ message: "Invalid or expired token" });
+    }
+
+    user.isVerified = true;
+    user.verificationToken = undefined;
+    await user.save();
+
+    res.status(200).json({ message: "Email verified successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
 export default router;
