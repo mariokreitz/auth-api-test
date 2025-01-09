@@ -9,7 +9,7 @@ router.get("/profile", verifyToken, getProfile);
 router.put("/profile", verifyToken, updateProfile);
 router.put("/profile/picture", verifyToken, updateProfilePicture);
 
-// (Admin only)
-router.get("/all-users", verifyToken, verifyRole("admin"), getAllUsers);
+// Only Admin
+router.get("/admin/users", verifyToken, verifyRole("admin"), getAllUsers);
 
 export default router;
