@@ -10,6 +10,9 @@ const userSchema = new mongoose.Schema(
     resetToken: { type: String, default: null },
     resetTokenExpiration: { type: Date, default: null },
     role: { type: String, enum: ["user", "admin"], default: "user" },
+    firstName: { type: String, default: "" },
+    lastName: { type: String, default: "" },
+    profilePicture: { type: String, default: "" },
   },
   { timestamps: true }
 );
