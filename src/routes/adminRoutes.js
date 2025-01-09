@@ -1,8 +1,7 @@
 import express from "express";
-import { deleteUser, updateUserRole } from "../controllers/adminController.js";
+import { deleteUser, updateUserRole, getAllUsers } from "../controllers/adminController.js";
 import verifyToken from "../middleware/verifyToken.js";
 import verifyRole from "../middleware/verifyRole.js";
-import { getAllUsers } from "../controllers/userController.js";
 
 const router = express.Router();
 
