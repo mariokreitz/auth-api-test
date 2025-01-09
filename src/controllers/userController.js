@@ -102,12 +102,12 @@ export const updateProfilePicture = async (req, res) => {
  * @returns {object} Message indicating logout was successful
  */
 export const logout = (req, res) => {
-  try {
-    res.clearCookie("token", { httpOnly: true, secure: true, sameSite: "None" });
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "None",
+    domain: "api.mario-kreitz.dev",
+  });
 
-    res.status(200).json({ message: "Logged out successfully" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error" });
-  }
+  res.status(200).json({ message: "Logged out successfully" });
 };
