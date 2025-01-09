@@ -28,8 +28,8 @@ Before getting started, make sure you have the following:
 Start by cloning the repository to your local machine:
 
 ```bash
-git clone https://github.com/mariokreitz/auth-api-docker.git
-cd auth-api-docker
+git clone https://github.com/mariokreitz/auth-api-test.git
+cd auth-api-test
 ```
 
 ### 2. Docker Configuration
