@@ -1,0 +1,44 @@
+{
+  "name": "auth-api-test",
+  "version": "1.0.0",
+  "description": "A reusable authentication API with Node.js and MongoDB",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mariokreitz/auth-api-test.git"
+  },
+  "keywords": [
+    "auth",
+    "api",
+    "nodejs",
+    "mongodb",
+    "jwt"
+  ],
+  "author": "Mario Kreitz",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mariokreitz/auth-api-test/issues"
+  },
+  "homepage": "https://github.com/mariokreitz/auth-api-test#readme",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-validator": "^7.2.1",
+    "helmet": "^8.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.9.3",
+    "nodemailer": "^6.9.16",
+    "passport": "^0.7.0",
+    "passport-github2": "^0.1.12"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
