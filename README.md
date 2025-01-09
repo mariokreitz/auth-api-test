@@ -39,7 +39,86 @@ The project uses the `compose.yaml` file to define the services and environment 
 - **Node.js API** (`server` service)
 - **Nginx reverse proxy** (`nginx` service)
 
-### 3. Building and Running the Containers
+#### Set Up the Production Data
+
+In the `compose.yaml`, replace the environment variables with your production values:
+
+```yaml
+services:
+  server:
+    build:
+      context: .
+    environment:
+      PORT: 3000
+      NODE_ENV: production
+      MONGO_URI: mongodb+srv://<your_mongo_uri>
+      JWT_SECRET: <your_jwt_secret>
+      EMAIL_USER: <your_email_user>
+      EMAIL_PASS: <your_email_pass>
+    expose:
+      - "3000"
+    networks:
+      - backend
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+    ports:
+      - "443:443"
+      - "80:80"
+    depends_on:
+      - server
+    networks:
+      - backend
+    restart: unless-stopped
+
+networks:
+  backend:
+    driver: bridge
+```
+
+Replace the following placeholders with your real values:
+- `<your_mongo_uri>`
+- `<your_jwt_secret>`
+- `<your_email_user>`
+- `<your_email_pass>`
+
+### 3. Copy Nginx Configuration
+
+Copy the `.sample.nginx.conf` file to `nginx.conf` and replace `yourdomain.com` with your actual domain in the configuration:
+
+```bash
+cp .sample.nginx.conf nginx.conf
+```
+
+Then, in `nginx.conf`, replace:
+
+```nginx
+server {
+    listen 80;
+    server_name yourdomain.com www.yourdomain.com;
+
+    # Redirect HTTP to HTTPS
+    return 301 https://$host$request_uri;
+}
+```
+
+With your real domain, for example:
+
+```nginx
+server {
+    listen 80;
+    server_name api.example.com www.api.example.com;
+
+    # Redirect HTTP to HTTPS
+    return 301 https://$host$request_uri;
+}
+```
+
+### 4. Building and Running the Containers
 
 To build and start the containers, run the following command:
 
@@ -49,7 +128,7 @@ docker compose up --build -d
 
 This will run both containers in **detached mode**. The `server` container hosts the Node.js API on port `3000`, while the `nginx` container listens on ports `80` (HTTP) and `443` (HTTPS).
 
-### 4. Nginx Configuration
+### 5. Nginx Configuration
 
 Nginx is set up to:
 
@@ -91,7 +170,7 @@ server {
 }
 ```
 
-### 5. Restart and Recovery
+### 6. Restart and Recovery
 
 To ensure the containers restart automatically on failure, the `restart` policy is configured to `unless-stopped` in the `compose.yaml` file:
 
@@ -105,7 +184,7 @@ services:
 
 This guarantees that both the API and Nginx containers will automatically restart unless manually stopped.
 
-### 6. Accessing the API
+### 7. Accessing the API
 
 Once the containers are running, you can access the API at:
 
@@ -115,7 +194,7 @@ https://api.example.com
 
 Test the authentication and other endpoints using tools like **Postman** or **Insomnia** to send requests to the API.
 
-### 7. Stopping the Containers
+### 8. Stopping the Containers
 
 To stop the containers, run the following command:
 
