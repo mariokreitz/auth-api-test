@@ -56,12 +56,11 @@ export const updateProfilePicture = async (req, res) => {
   }
 };
 
-// (Admin only)
-export const getAllUsers = async (req, res) => {
+export const logout = (req, res) => {
   try {
-    const users = await User.find().select("-password -verificationToken -resetToken -resetTokenExpiration");
+    res.clearCookie("token", { httpOnly: true, secure: true, sameSite: "None" });
 
-    res.status(200).json(users);
+    res.status(200).json({ message: "Logged out successfully" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });
