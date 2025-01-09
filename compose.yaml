@@ -12,16 +12,16 @@ services:
       EMAIL_USER: <your_email_user>
       EMAIL_PASS: <your_email_pass>
     expose:
-      - "3000" # Nur für den internen Docker-Verkehr sichtbar
+      - "3000"
     networks:
       - backend
 
   nginx:
     image: nginx:latest
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf # Deine Nginx-Konfigurationsdatei
+      - ./nginx.conf:/etc/nginx/nginx.conf
     ports:
-      - "80:80" # Leitet Port 80 des Hosts auf den Nginx-Container weiter
+      - "80:80"
     depends_on:
       - server
     networks:
