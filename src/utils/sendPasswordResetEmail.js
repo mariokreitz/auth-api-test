@@ -1,5 +1,13 @@
 import nodemailer from "nodemailer";
 
+/**
+ * Sends a password reset email to the specified user.
+ *
+ * @param {object} user - The user object containing the email and username.
+ * @param {string} resetToken - The token to be included in the password reset link.
+ * @throws Will throw an error if the email fails to send.
+ */
+
 const sendPasswordResetEmail = async (user, resetToken) => {
   try {
     const transporter = nodemailer.createTransport({

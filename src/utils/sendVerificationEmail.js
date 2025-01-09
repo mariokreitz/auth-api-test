@@ -1,5 +1,13 @@
 import nodemailer from "nodemailer";
 
+/**
+ * Sends a verification email to the specified user.
+ *
+ * @param {object} user - The user object containing the email address.
+ * @param {string} verificationToken - The token to be included in the verification link.
+ * @throws Will throw an error if the email fails to send.
+ */
+
 const sendVerificationEmail = async (user, verificationToken) => {
   try {
     const transporter = nodemailer.createTransport({

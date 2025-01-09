@@ -1,5 +1,12 @@
 import User from "../models/User.js";
 
+/**
+ * @description Delete a user by ID
+ * @route DELETE /admin/users/:userId
+ * @access Admin
+ * @param {string} userId - User ID to delete
+ * @returns {object} Message indicating user was deleted successfully
+ */
 export const deleteUser = async (req, res) => {
   const { userId } = req.params;
 
@@ -14,6 +21,15 @@ export const deleteUser = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+/**
+ * @description Update a user's role
+ * @route PUT /admin/users/role
+ * @access Admin
+ * @param {string} userId - User ID to update
+ * @param {string} role - New role to assign to the user
+ * @returns {object} Message indicating user role was updated successfully, and the updated user object
+ */
 
 export const updateUserRole = async (req, res) => {
   const { userId, role } = req.body;
@@ -34,6 +50,12 @@ export const updateUserRole = async (req, res) => {
   }
 };
 
+/**
+ * @description Get all users
+ * @route GET /admin/users
+ * @access Admin
+ * @returns {array} Array of all user objects
+ */
 export const getAllUsers = async (req, res) => {
   try {
     const users = await User.find().select("-password -verificationToken -resetToken -resetTokenExpiration");
