@@ -1,13 +1,15 @@
 import express from "express";
 import { body, validationResult } from "express-validator";
 import User from "../models/User.js";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
 import crypto from "crypto";
 import sendVerificationEmail from "../utils/sendVerificationEmail.js";
 import sendPasswordResetEmail from "../utils/sendPasswordResetEmail.js";
 import resetPasswordLimiter from "../middleware/resetPasswordLimiter.js";
+import authMiddleware from "../middleware/authMiddleware.js";
+import verifyRole from "../middleware/verifyRole.js";
 
 const router = express.Router();
 router.use(cookieParser());
@@ -33,7 +35,9 @@ router.post(
         return res.status(400).json({ message: "User already exists" });
       }
 
-      const user = await User.create({ username, email, password });
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      const user = await User.create({ username, email, password: hashedPassword });
 
       const verificationToken = crypto.randomBytes(20).toString("hex");
       user.verificationToken = verificationToken;
@@ -67,14 +71,20 @@ router.post(
       }
 
       const isMatch = await bcrypt.compare(password, user.password);
+
       if (!isMatch) {
         return res.status(400).json({ message: "Invalid credentials" });
       }
+
       if (!user.isVerified) {
         return res.status(400).json({ message: "Please verify your email" });
       }
 
-      const payload = { userId: user._id, username: user.username };
+      const payload = {
+        userId: user._id,
+        username: user.username,
+        role: user.role,
+      };
       const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1h" });
 
       res.cookie("token", token, {
