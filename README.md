@@ -1,6 +1,6 @@
 # Auth API with Docker and Nginx
 
-This project is a Node.js-based authentication API that is deployed using Docker, with Nginx serving as a reverse proxy. The API uses MongoDB Atlas for database storage and includes JWT-based authentication, user profile management, and secure email communication.
+This project is a **Node.js-based authentication API** deployed using **Docker**, with **Nginx** serving as a reverse proxy. The API uses **MongoDB Atlas** for database storage and includes **JWT-based authentication**, user profile management, and secure email communication.
 
 ## Features
 
@@ -13,70 +13,50 @@ This project is a Node.js-based authentication API that is deployed using Docker
 
 ## Prerequisites
 
-- Docker
-- Docker Compose
-- A domain (for production use)
-- SSL certificates for HTTPS (using Let's Encrypt)
-- MongoDB Atlas account for database hosting
+Before getting started, make sure you have the following:
+
+- **Docker** installed on your machine
+- **Docker Compose** to manage multi-container setups
+- A **domain** (for production use)
+- **SSL certificates** for HTTPS (using Let's Encrypt)
+- A **MongoDB Atlas** account for hosting the database
 
 ## Project Setup
 
-### 1. Clone the repository:
+### 1. Clone the Repository
+
+Start by cloning the repository to your local machine:
 
 ```bash
 git clone https://github.com/mariokreitz/auth-api-docker.git
 cd auth-api-docker
 ```
 
-### 2. Environment Configuration
+### 2. Docker Configuration
 
-Create a `.env` file based on the `.sample.env` provided in the repository.
+The project uses the `compose.yaml` file to define the services and environment variables. The setup includes:
 
-```bash
-cp .sample.env .env
-```
+- **Node.js API** (`server` service)
+- **Nginx reverse proxy** (`nginx` service)
 
-Edit the `.env` file with the following information:
+### 3. Building and Running the Containers
 
-```env
-PORT=3000
-NODE_ENV=production
-MONGO_URI=mongodb+srv://<your_mongo_uri>
-JWT_SECRET=<your_jwt_secret>
-EMAIL_USER=<your_email_user>
-EMAIL_PASS=<your_email_pass>
-```
-
-### 3. Docker Configuration
-
-#### Dockerfile
-
-A `Dockerfile` is provided to build the application in a Node.js container. It installs the necessary dependencies and runs the API.
-
-#### Docker Compose
-
-`docker-compose.yml` is configured to run the app in two containers:
-
-1. **Node.js API** (`server` service)
-2. **Nginx reverse proxy** (`nginx` service)
-
-The Nginx container handles SSL termination and proxies requests to the API.
-
-### 4. Building and Running the Containers
-
-To build and run the containers, use the following command:
+To build and start the containers, run the following command:
 
 ```bash
-docker-compose up --build -d
+docker compose up --build -d
 ```
 
-This will start both containers in detached mode. The `server` container runs the Node.js app on port 3000, and the `nginx` container listens on ports 80 (HTTP) and 443 (HTTPS).
+This will run both containers in **detached mode**. The `server` container hosts the Node.js API on port `3000`, while the `nginx` container listens on ports `80` (HTTP) and `443` (HTTPS).
 
-### 5. Nginx Configuration
+### 4. Nginx Configuration
 
-Nginx is configured to redirect all HTTP traffic to HTTPS and act as a reverse proxy for the Node.js API. The configuration file is mounted from the host machine to the container.
+Nginx is set up to:
 
-In the `nginx.conf` file, make sure to replace `yourdomain.com` with your actual domain, e.g., `api.example.com`.
+1. Redirect all HTTP traffic to HTTPS
+2. Act as a reverse proxy for the Node.js API
+
+Make sure to replace `yourdomain.com` with your actual domain (e.g., `api.example.com`) in the `nginx.conf` file.
 
 ```nginx
 server {
@@ -111,9 +91,9 @@ server {
 }
 ```
 
-### 6. Restart and Recovery
+### 5. Restart and Recovery
 
-To ensure the containers automatically restart on failure, the `restart` policy is set to `unless-stopped` in the `docker-compose.yml` file:
+To ensure the containers restart automatically on failure, the `restart` policy is configured to `unless-stopped` in the `compose.yaml` file:
 
 ```yaml
 services:
@@ -123,26 +103,30 @@ services:
     restart: unless-stopped
 ```
 
-This ensures that both the API and Nginx containers will restart automatically unless manually stopped.
+This guarantees that both the API and Nginx containers will automatically restart unless manually stopped.
 
-### 7. Accessing the API
+### 6. Accessing the API
 
-Once the containers are running, you can access the API at `https://api.example.com`.
+Once the containers are running, you can access the API at:
 
-To test the authentication and other endpoints, use tools like Postman or Insomnia to send requests to the API.
-
-### 8. Stopping the Containers
-
-To stop the containers, use:
-
-```bash
-docker-compose down
+```
+https://api.example.com
 ```
 
-This will stop and remove the containers, but leave the volumes intact.
+Test the authentication and other endpoints using tools like **Postman** or **Insomnia** to send requests to the API.
+
+### 7. Stopping the Containers
+
+To stop the containers, run the following command:
+
+```bash
+docker compose down
+```
+
+This command will stop and remove the containers, but leave the data volumes intact.
 
 ---
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
