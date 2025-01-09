@@ -1,27 +1,33 @@
-# Auth API with Docker and Nginx
+# 🚀 Auth API with Docker and Nginx
 
-This project is a **Node.js-based authentication API** deployed using **Docker**, with **Nginx** serving as a reverse proxy. The API uses **MongoDB Atlas** for database storage and includes **JWT-based authentication**, user profile management, and secure email communication.
+[![License](https://img.shields.io/github/license/mariokreitz/auth-api-docker?style=flat-square)](LICENSE)
+[![Docker](https://img.shields.io/docker/automated/mariokreitz/auth-api-docker?style=flat-square)](https://hub.docker.com/repository/docker/mariokreitz/auth-api-docker)
+[![Node.js](https://img.shields.io/badge/Node.js-v16.x-brightgreen?style=flat-square)](https://nodejs.org/en/)
+[![MongoDB Atlas](https://img.shields.io/badge/MongoDB-Atlas-green?style=flat-square)](https://www.mongodb.com/cloud/atlas)
+[![Version](https://img.shields.io/github/v/release/mariokreitz/auth-api-docker?style=flat-square)](https://github.com/mariokreitz/auth-api-docker/releases)
 
-## Features
+This project is a **Node.js-based authentication API** deployed using **Docker**, with **Nginx** serving as a reverse proxy. The API uses **MongoDB Atlas** for database storage and includes **JWT-based authentication**, user profile management, and secure email communication. 🔐
 
-- **User Authentication** (JWT)
-- **Email Verification**
-- **Password Reset**
-- **User Profile Management**
-- **Admin Role Management**
-- **Secure Communication via HTTPS**
+## 🛠 Features
 
-## Prerequisites
+- **User Authentication** (JWT) 🔑
+- **Email Verification** 📧
+- **Password Reset** 🔄
+- **User Profile Management** 🧑‍💼
+- **Admin Role Management** 👨‍💻
+- **Secure Communication via HTTPS** 🌐
+
+## 📝 Prerequisites
 
 Before getting started, make sure you have the following:
 
-- **Docker** installed on your machine
-- **Docker Compose** to manage multi-container setups
-- A **domain** (for production use)
-- **SSL certificates** for HTTPS (using Let's Encrypt)
-- A **MongoDB Atlas** account for hosting the database
+- **Docker** 🐳 installed on your machine
+- **Docker Compose** to manage multi-container setups 🛠
+- A **domain** (for production use) 🌍
+- **SSL certificates** for HTTPS (using Let's Encrypt) 🔒
+- A **MongoDB Atlas** account for hosting the database 🌱
 
-## Project Setup
+## 🚀 Project Setup
 
 ### 1. Clone the Repository
 
@@ -36,8 +42,8 @@ cd auth-api-docker
 
 The project uses the `compose.yaml` file to define the services and environment variables. The setup includes:
 
-- **Node.js API** (`server` service)
-- **Nginx reverse proxy** (`nginx` service)
+- **Node.js API** (`server` service) 🖥️
+- **Nginx reverse proxy** (`nginx` service) 🌐
 
 #### Set Up the Production Data
 
@@ -132,8 +138,8 @@ This will run both containers in **detached mode**. The `server` container hosts
 
 Nginx is set up to:
 
-1. Redirect all HTTP traffic to HTTPS
-2. Act as a reverse proxy for the Node.js API
+1. Redirect all HTTP traffic to HTTPS 🔄
+2. Act as a reverse proxy for the Node.js API 🖥️
 
 Make sure to replace `yourdomain.com` with your actual domain (e.g., `api.example.com`) in the `nginx.conf` file.
 
@@ -192,7 +198,7 @@ Once the containers are running, you can access the API at:
 https://api.example.com
 ```
 
-Test the authentication and other endpoints using tools like **Postman** or **Insomnia** to send requests to the API.
+Test the authentication and other endpoints using tools like **Postman** or **Insomnia** to send requests to the API. 🔑
 
 ### 8. Stopping the Containers
 
@@ -206,6 +212,14 @@ This command will stop and remove the containers, but leave the data volumes int
 
 ---
 
-## License
+## 📑 API Documentation
 
-This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
+The full API documentation for this project is available through Postman. You can view the documentation, including detailed information about all available endpoints, request/response formats, and usage examples by clicking the link below:
+
+[**Auth API Documentation**](https://documenter.getpostman.com/view/40182248/2sAYQUqZXM) 📖
+
+---
+
+## 📜 License
+
+This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details. 📄
