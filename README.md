@@ -1,11 +1,5 @@
 # 🚀 Auth API with Docker and Nginx
 
-[![License](https://img.shields.io/github/license/mariokreitz/auth-api-docker?style=flat-square)](LICENSE)
-[![Docker](https://img.shields.io/docker/automated/mariokreitz/auth-api-docker?style=flat-square)](https://hub.docker.com/repository/docker/mariokreitz/auth-api-docker)
-[![Node.js](https://img.shields.io/badge/Node.js-v16.x-brightgreen?style=flat-square)](https://nodejs.org/en/)
-[![MongoDB Atlas](https://img.shields.io/badge/MongoDB-Atlas-green?style=flat-square)](https://www.mongodb.com/cloud/atlas)
-[![Version](https://img.shields.io/github/v/release/mariokreitz/auth-api-docker?style=flat-square)](https://github.com/mariokreitz/auth-api-docker/releases)
-
 This project is a **Node.js-based authentication API** deployed using **Docker**, with **Nginx** serving as a reverse proxy. The API uses **MongoDB Atlas** for database storage and includes **JWT-based authentication**, user profile management, and secure email communication. 🔐
 
 ## 🛠 Features
