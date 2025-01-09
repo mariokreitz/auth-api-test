@@ -7,6 +7,7 @@ import cookieParser from "cookie-parser";
 import crypto from "crypto";
 import sendVerificationEmail from "../utils/sendVerificationEmail.js";
 import sendPasswordResetEmail from "../utils/sendPasswordResetEmail.js";
+import resetPasswordLimiter from "../middleware/resetPasswordLimiter.js";
 
 const router = express.Router();
 router.use(cookieParser());
@@ -113,35 +114,40 @@ router.get("/verify-email", async (req, res) => {
   }
 });
 
-router.post("/request-password-reset", [body("email").isEmail().withMessage("Valid email is required")], async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
-  const { email } = req.body;
-
-  try {
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(400).json({ message: "No user found with this email address" });
+router.post(
+  "/request-password-reset",
+  resetPasswordLimiter,
+  [body("email").isEmail().withMessage("Valid email is required")],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
     }
 
-    const resetToken = crypto.randomBytes(20).toString("hex");
+    const { email } = req.body;
 
-    user.resetToken = resetToken;
-    user.resetTokenExpiration = Date.now() + 3600000; // 1 hour
+    try {
+      const user = await User.findOne({ email });
+      if (!user) {
+        return res.status(400).json({ message: "No user found with this email address" });
+      }
 
-    await user.save();
+      const resetToken = crypto.randomBytes(20).toString("hex");
 
-    await sendPasswordResetEmail(user, resetToken);
+      user.resetToken = resetToken;
+      user.resetTokenExpiration = Date.now() + 3600000; // 1 hour
 
-    res.status(200).json({ message: "Password reset link sent. Please check your email." });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error" });
+      await user.save();
+
+      await sendPasswordResetEmail(user, resetToken);
+
+      res.status(200).json({ message: "Password reset link sent. Please check your email." });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Server error" });
+    }
   }
-});
+);
 
 router.post(
   "/reset-password",
