@@ -6,6 +6,7 @@ import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
 import crypto from "crypto";
 import sendVerificationEmail from "../utils/sendVerificationEmail.js";
+import sendPasswordResetEmail from "../utils/sendPasswordResetEmail.js";
 
 const router = express.Router();
 router.use(cookieParser());
@@ -141,5 +142,41 @@ router.post("/request-password-reset", [body("email").isEmail().withMessage("Val
     res.status(500).json({ message: "Server error" });
   }
 });
+
+router.post(
+  "/reset-password",
+  [
+    body("password").isLength({ min: 6 }).withMessage("Password must be at least 6 characters"),
+    body("token").notEmpty().withMessage("Token is required"),
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { password, token } = req.body;
+
+    try {
+      const user = await User.findOne({ resetToken: token, resetTokenExpiration: { $gt: Date.now() } });
+      if (!user) {
+        return res.status(400).json({ message: "Invalid or expired token" });
+      }
+
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      user.password = hashedPassword;
+      user.resetToken = undefined;
+      user.resetTokenExpiration = undefined;
+
+      await user.save();
+
+      res.status(200).json({ message: "Password successfully reset" });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Server error" });
+    }
+  }
+);
 
 export default router;
