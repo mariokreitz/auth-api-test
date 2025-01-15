@@ -1,4 +1,5 @@
 import User from "../models/User.js";
+import { logAudit } from "../service/auditService.js";
 
 /**
  * @description Delete a user by ID
@@ -42,10 +43,10 @@ export const updateUserRole = async (req, res) => {
 
     user.role = role;
     await user.save();
-
+    await logAudit(req.user.username, "update_role", `Updated UserID=${userId} to Role=${role}`, req.ip);
     res.status(200).json({ message: "User role updated successfully", user });
   } catch (error) {
-    console.error(error);
+    await logAudit(req.user.username, "update_role_error", error.message, req.ip);
     res.status(500).json({ message: "Server error" });
   }
 };
