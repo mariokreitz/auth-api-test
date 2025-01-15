@@ -4,6 +4,7 @@ import crypto from "crypto";
 import User from "../models/User.js";
 import sendVerificationEmail from "../utils/sendVerificationEmail.js";
 import sendPasswordResetEmail from "../utils/sendPasswordResetEmail.js";
+import { logAudit } from "../service/auditService.js";
 
 /**
  * @description Register a new user
@@ -87,6 +88,7 @@ export const login = async (req, res) => {
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
+      await logAudit("unknown", "failed_login", `Email=${email}`, req.ip);
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
@@ -109,9 +111,10 @@ export const login = async (req, res) => {
       maxAge: 3600000, // 1 hour
     });
 
+    await logAudit(user.username, "successful_login", `Email=${email}`, req.ip);
     res.status(200).json({ message: "Login successful" });
   } catch (error) {
-    console.error(error);
+    await logAudit("unknown", "login_error", error.message, req.ip);
     res.status(500).json({ message: "Server error" });
   }
 };
