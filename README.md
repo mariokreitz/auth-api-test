@@ -4,12 +4,17 @@ This project is a **Node.js-based authentication API** deployed using **Docker**
 
 ## 🛠 Features
 
-- **User Authentication** (JWT) 🔑
-- **Email Verification** 📧
-- **Password Reset** 🔄
-- **User Profile Management** 🧑‍💼
-- **Admin Role Management** 👨‍💻
-- **Secure Communication via HTTPS** 🌐
+- **User Authentication** (JWT) 🔑  
+- **Email Verification** 📧  
+- **Password Reset** 🔄  
+- **User Profile Management** 🧑‍💼  
+- **Admin Role Management** 👨‍💻  
+- **Secure Communication via HTTPS** 🌐  
+- **Login History** 📅  
+  - Tracks successful and failed login attempts for better monitoring.
+- **Auditing** 📝  
+  - Logs all critical actions, such as profile changes, admin operations, and login attempts, ensuring a clear audit trail.
+
 
 ## 📝 Prerequisites
 
