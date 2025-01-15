@@ -81,6 +81,7 @@ networks:
 ```
 
 Replace the following placeholders with your real values:
+
 - `<your_mongo_uri>`
 - `<your_jwt_secret>`
 - `<your_email_user>`
@@ -138,36 +139,45 @@ Nginx is set up to:
 Make sure to replace `yourdomain.com` with your actual domain (e.g., `api.example.com`) in the `nginx.conf` file.
 
 ```nginx
-server {
-    listen 80;
-    server_name yourdomain.com www.yourdomain.com;
+    server {
+        listen 80;
+        server_name yourdomain.com www.yourdomain.com;
 
-    # Redirect HTTP to HTTPS
-    return 301 https://$host$request_uri;
-}
-
-server {
-    listen 443 ssl;
-    server_name yourdomain.com www.yourdomain.com;
-
-    # SSL Certificates (mounted from host)
-    ssl_certificate /etc/letsencrypt/live/yourdomain.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/yourdomain.com/privkey.pem;
-
-    # SSL settings
-    ssl_protocols TLSv1.2 TLSv1.3;
-    ssl_ciphers 'TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384';
-    ssl_prefer_server_ciphers off;
-
-    # Reverse proxy for backend API
-    location / {
-        proxy_pass http://server:3000;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
+        # Redirect HTTP to HTTPS
+        return 301 https://$host$request_uri;
     }
-}
+
+    server {
+        listen 443 ssl;
+        server_name yourdomain.com www.yourdomain.com;
+
+        # SSL Certificates (mounted from host)
+        ssl_certificate /etc/letsencrypt/live/yourdomain.com/fullchain.pem;
+        ssl_certificate_key /etc/letsencrypt/live/yourdomain.com/privkey.pem;
+
+        # SSL settings
+        ssl_protocols TLSv1.2 TLSv1.3;
+        ssl_ciphers 'TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384';
+        ssl_prefer_server_ciphers off;
+
+        # Security headers
+        add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
+        add_header X-Content-Type-Options nosniff always;
+        add_header X-Frame-Options DENY always;
+        add_header X-XSS-Protection "1; mode=block" always;
+
+        # Reverse proxy for backend API
+        location / {
+            proxy_pass http://server:3000;  # Docker container name 'server' from Docker Compose
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header Cookie $http_cookie;
+            proxy_cookie_path / /;
+            proxy_cookie_domain server yourdomain.com;
+        }
+    }
 ```
 
 ### 6. Restart and Recovery
