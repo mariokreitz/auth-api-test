@@ -1,4 +1,4 @@
-import Audit from "../models/auditModel.js";
+import Audit from "../models/audit.model.js";
 
 /**
  * @description Get audit logs filtered by user, action, and date range

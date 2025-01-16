@@ -1,4 +1,4 @@
-import User from "../models/User.js";
+import User from "../models/user.model.js";
 
 /**
  * @description Get the profile of the currently logged in user

@@ -1,10 +1,10 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
-import User from "../models/User.js";
+import User from "../models/user.model.js";
 import sendVerificationEmail from "../utils/sendVerificationEmail.js";
 import sendPasswordResetEmail from "../utils/sendPasswordResetEmail.js";
-import { logAudit } from "../service/auditService.js";
+import { logAudit } from "../service/audit.service.js";
 
 /**
  * @description Register a new user

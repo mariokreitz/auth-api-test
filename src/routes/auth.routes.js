@@ -1,7 +1,7 @@
 import express from "express";
 import { body } from "express-validator";
-import * as authController from "../controllers/authController.js";
-import resetPasswordLimiter from "../middleware/resetPasswordLimiter.js";
+import * as authController from "../controllers/auth.controller.js";
+import resetPasswordLimiter from "../middleware/requestLimiter.middleware.js";
 
 const router = express.Router();
 

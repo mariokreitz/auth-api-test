@@ -2,13 +2,14 @@ import express from "express";
 import helmet from "helmet";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import authRoutes from "./routes/authRoutes.js";
-import userRoutes from "./routes/userRoutes.js";
-import adminRoutes from "./routes/adminRoutes.js";
-import sessionRoutes from "./routes/sessionRoutes.js";
-import { auditMiddleware } from "./middleware/auditMiddleware.js";
-import requestLogger from "./middleware/requestLogger.js";
-import errorHandler from "./middleware/errorHandler.js";
+import authRoutes from "./routes/auth.routes.js";
+import userRoutes from "./routes/user.routes.js";
+import adminRoutes from "./routes/admin.routes.js";
+import sessionRoutes from "./routes/session.routes.js";
+import { auditMiddleware } from "./middleware/audit.middleware.js";
+import requestLogger from "./middleware/requestLogger.middleware.js";
+import errorHandler from "./middleware/errorHandler.middleware.js";
+import verifyToken from "./middleware/verifyToken.middleware.js";
 
 const app = express();
 
@@ -25,10 +26,10 @@ app.use(cookieParser());
 app.use(requestLogger);
 app.use(errorHandler);
 
-app.use("/session", sessionRoutes);
 app.use("/auth", authRoutes);
-app.use("/user", userRoutes);
-app.use("/admin", auditMiddleware("access_admin"), adminRoutes);
+app.use("/session", verifyToken, sessionRoutes);
+app.use("/user", verifyToken, userRoutes);
+app.use("/admin", verifyToken, auditMiddleware("access_admin"), adminRoutes);
 
 app.get("/", (req, res) => {
   res.send("Auth API is up and running!");

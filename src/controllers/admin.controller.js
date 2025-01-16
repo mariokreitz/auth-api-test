@@ -1,5 +1,5 @@
-import User from "../models/User.js";
-import { logAudit } from "../service/auditService.js";
+import User from "../models/user.model.js";
+import { logAudit } from "../service/audit.service.js";
 
 /**
  * @description Delete a user by ID
