@@ -2,14 +2,15 @@ import User from "../models/user.model.js";
 import { logAudit } from "../service/audit.service.js";
 
 /**
- * @description Delete a user by ID
+ * @description Delete a user by userId
  * @route DELETE /admin/users/:userId
  * @access Admin
  * @param {string} userId - User ID to delete
- * @returns {object} Message indicating user was deleted successfully
+ * @returns {object} Message indicating whether the user was successfully deleted or not found
  */
+
 export const deleteUser = async (req, res) => {
-  const { userId } = req.params;
+  const { userId } = req.body;
 
   try {
     const user = await User.findByIdAndDelete(userId);
