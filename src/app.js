@@ -6,7 +6,6 @@ import authRoutes from "./routes/auth.routes.js";
 import userRoutes from "./routes/user.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
 import sessionRoutes from "./routes/session.routes.js";
-import { auditMiddleware } from "./middleware/audit.middleware.js";
 import requestLogger from "./middleware/requestLogger.middleware.js";
 import errorHandler from "./middleware/errorHandler.middleware.js";
 import verifyToken from "./middleware/verifyToken.middleware.js";
@@ -29,7 +28,7 @@ app.use(errorHandler);
 app.use("/auth", authRoutes);
 app.use("/session", verifyToken, sessionRoutes);
 app.use("/user", verifyToken, userRoutes);
-app.use("/admin", verifyToken, auditMiddleware("access_admin"), adminRoutes);
+app.use("/admin", verifyToken, adminRoutes);
 
 app.get("/", (req, res) => {
   res.send("Auth API is up and running!");
