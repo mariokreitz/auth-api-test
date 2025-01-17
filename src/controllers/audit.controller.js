@@ -44,7 +44,7 @@ export const getAuditLogs = async (req, res) => {
 
     const query = {};
     if (user) query.user = { $eq: user };
-    if (action) query.action = action;
+    if (action) query.action = { $eq: action };
     if (startDate || endDate) {
       query.timestamp = {};
       if (startDate) query.timestamp.$gte = new Date(startDate);
