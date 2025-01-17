@@ -1,7 +1,7 @@
 import express from "express";
 import { body } from "express-validator";
 import * as authController from "../controllers/auth.controller.js";
-import { requestPasswordReset } from "../middleware/requestLimiter.middleware.js";
+import { passwordRequestLimiter } from "../middleware/requestLimiter.middleware.js";
 
 const router = express.Router();
 
@@ -25,7 +25,7 @@ router.get("/verify-email", authController.verifyEmail);
 
 router.post(
   "/request-password-reset",
-  requestPasswordReset,
+  passwordRequestLimiter,
   [body("email").isEmail().withMessage("Valid email is required")],
   authController.requestPasswordReset
 );
