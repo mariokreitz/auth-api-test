@@ -125,13 +125,22 @@ export const updateProfilePicture = async (req, res) => {
  * @access User
  * @returns {object} Message indicating logout was successful
  */
-export const logout = (req, res) => {
-  res.clearCookie("token", {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "None",
-    domain: "api.mario-kreitz.dev",
-  });
+export const logout = async (req, res) => {
+  try {
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "None",
+      maxAge: 0,
+      domain: process.env.NODE_ENV === "production" ? process.env.COOKIE_DOMAIN : undefined,
+      path: "/",
+    });
 
-  res.status(200).json({ message: "Logged out successfully" });
+    console.log("Cookie cleared.");
+
+    res.status(200).json({ success: true, message: "Logged out successfully" });
+  } catch (error) {
+    console.error("Error during logout:", error);
+    res.status(500).json({ message: "Server error", error });
+  }
 };
