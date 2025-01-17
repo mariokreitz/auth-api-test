@@ -11,6 +11,7 @@ import requestLogger from "./middleware/requestLogger.middleware.js";
 import errorHandler from "./middleware/errorHandler.middleware.js";
 import verifyToken from "./middleware/verifyToken.middleware.js";
 import { limiter } from "./middleware/requestLimiter.middleware.js";
+import session from "express-session";
 
 const app = express();
 
@@ -24,6 +25,14 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "ChuckNorrisWillBeMyGuard",
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: process.env.NODE_ENV === "production" },
+  })
+);
 app.use(lusca.csrf());
 app.use(requestLogger);
 app.use(errorHandler);
