@@ -103,8 +103,11 @@ export const updateProfilePicture = async (req, res) => {
   try {
     const userId = req.user.userId;
     const { profilePicture } = req.body;
+    if (typeof profilePicture !== "string") {
+      return res.status(400).json({ message: "Invalid profile picture format" });
+    }
 
-    const updatedUser = await User.findByIdAndUpdate(userId, { profilePicture }, { new: true, runValidators: true }).select(
+    const updatedUser = await User.findByIdAndUpdate(userId, { $set: { profilePicture } }, { new: true, runValidators: true }).select(
       "-password -verificationToken -resetToken -resetTokenExpiration"
     );
 
