@@ -180,7 +180,7 @@ export const requestPasswordReset = async (req, res) => {
   const { email } = req.body;
 
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: { $eq: email } });
     if (!user) {
       return res.status(400).json({ message: "No user found with this email address" });
     }
