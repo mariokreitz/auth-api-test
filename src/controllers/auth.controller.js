@@ -141,7 +141,7 @@ export const verifyEmail = async (req, res) => {
   }
 
   try {
-    const user = await User.findOne({ verificationToken: token });
+    const user = await User.findOne({ verificationToken: { $eq: token } });
     if (!user) {
       return res.status(400).json({ message: "Invalid or expired token" });
     }
