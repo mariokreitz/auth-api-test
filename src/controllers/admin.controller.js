@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import { logAudit } from "../service/audit.service.js";
 import sendVerificationEmail from "../utils/sendVerificationEmail.js";
 import crypto from "crypto";
+import mongoose from "mongoose";
 
 /**
  * @description Create a new user
@@ -110,15 +111,19 @@ export const updateUser = async (req, res) => {
     isVerified: newIsVerified,
   } = req.body;
 
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    return res.status(400).json({ message: "Invalid user ID" });
+  }
+
   const updateData = {};
 
-  if (newUsername) updateData.username = newUsername;
-  if (newEmail) updateData.email = newEmail;
-  if (newFirstName) updateData.firstName = newFirstName;
-  if (newLastName) updateData.lastName = newLastName;
-  if (newPassword) updateData.password = await bcrypt.hash(newPassword, 10);
-  if (newRole) updateData.role = newRole;
-  if (newIsVerified !== undefined) updateData.isVerified = newIsVerified;
+  if (newUsername && typeof newUsername === 'string') updateData.username = newUsername;
+  if (newEmail && typeof newEmail === 'string') updateData.email = newEmail;
+  if (newFirstName && typeof newFirstName === 'string') updateData.firstName = newFirstName;
+  if (newLastName && typeof newLastName === 'string') updateData.lastName = newLastName;
+  if (newPassword && typeof newPassword === 'string') updateData.password = await bcrypt.hash(newPassword, 10);
+  if (newRole && typeof newRole === 'string') updateData.role = newRole;
+  if (newIsVerified !== undefined && typeof newIsVerified === 'boolean') updateData.isVerified = newIsVerified;
 
   try {
     const user = await User.findByIdAndUpdate(userId, updateData, { new: true, runValidators: true });
