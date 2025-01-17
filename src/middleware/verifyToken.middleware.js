@@ -16,14 +16,16 @@ import jwt from "jsonwebtoken";
  */
 
 const verifyToken = (req, res, next) => {
-  const token = req.cookies.token;
-  if (!token) {
+  const { token: authToken } = req.cookies;
+
+  if (!authToken) {
     return res.status(401).json({ message: "No token, authorization denied" });
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
+    const { userId, username, role } = jwt.verify(authToken, process.env.JWT_SECRET);
+
+    req.user = { userId, username, role };
     next();
   } catch (error) {
     return res.status(401).json({ message: "Token is not valid" });
