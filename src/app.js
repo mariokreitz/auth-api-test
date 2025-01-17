@@ -3,6 +3,7 @@ import helmet from "helmet";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import lusca from "lusca";
+import RateLimit from "express-rate-limit";
 import authRoutes from "./routes/auth.routes.js";
 import userRoutes from "./routes/user.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
@@ -12,6 +13,12 @@ import errorHandler from "./middleware/errorHandler.middleware.js";
 import verifyToken from "./middleware/verifyToken.middleware.js";
 
 const app = express();
+
+// set up rate limiter: maximum of 100 requests per 15 minutes
+const limiter = RateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // max 100 requests per windowMs
+});
 
 app.use(helmet());
 app.use(
@@ -26,6 +33,7 @@ app.use(cookieParser());
 app.use(lusca.csrf());
 app.use(requestLogger);
 app.use(errorHandler);
+app.use(limiter);
 
 app.use("/auth", authRoutes);
 app.use("/session", verifyToken, sessionRoutes);
