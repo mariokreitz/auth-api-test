@@ -2,6 +2,7 @@ import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import { logAudit } from "../service/audit.service.js";
 import sendVerificationEmail from "../utils/sendVerificationEmail.js";
+import crypto from "crypto";
 
 /**
  * @description Create a new user
@@ -60,7 +61,7 @@ export const createUser = async (req, res) => {
 
     await sendVerificationEmail(user, verificationToken);
 
-    logAudit(req.user.username, "create_user", `Created user ${username} with role ${role}`, req.ip);
+    logAudit(req.user.username, "admin_create_user", `Created user ${username} with role ${role}`, req.ip);
     res.status(201).json({ message: "User created successfully" });
   } catch (error) {
     logAudit(req.user.username, "create_user_error", error.message, req.ip);
@@ -98,12 +99,23 @@ export const createUser = async (req, res) => {
  * }
  */
 export const updateUser = async (req, res) => {
-  const { userId, username: newUsername, email: newEmail, password: newPassword, role: newRole, isVerified: newIsVerified } = req.body;
+  const {
+    userId,
+    username: newUsername,
+    firstName: newFirstName,
+    lastName: newLastName,
+    email: newEmail,
+    password: newPassword,
+    role: newRole,
+    isVerified: newIsVerified,
+  } = req.body;
 
   const updateData = {};
 
   if (newUsername) updateData.username = newUsername;
   if (newEmail) updateData.email = newEmail;
+  if (newFirstName) updateData.firstName = newFirstName;
+  if (newLastName) updateData.lastName = newLastName;
   if (newPassword) updateData.password = await bcrypt.hash(newPassword, 10);
   if (newRole) updateData.role = newRole;
   if (newIsVerified !== undefined) updateData.isVerified = newIsVerified;
@@ -115,7 +127,7 @@ export const updateUser = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    logAudit(req.user.username, "update_user", `Updated user ${user.username} with role ${user.role}`, req.ip);
+    logAudit(req.user.username, "admin_update_user", `Updated user ${user.username} with role ${user.role}`, req.ip);
     res.status(200).json({ message: "User updated successfully" });
   } catch (error) {
     logAudit(req.user.username, "update_user_error", error.message, req.ip);
