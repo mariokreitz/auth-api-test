@@ -61,7 +61,7 @@ export const createUser = async (req, res) => {
     await sendVerificationEmail(user, verificationToken);
 
     logAudit(req.user.username, "create_user", `Created user ${username} with role ${role}`, req.ip);
-    res.status(201).json({ message: "User created successfully", user });
+    res.status(201).json({ message: "User created successfully" });
   } catch (error) {
     logAudit(req.user.username, "create_user_error", error.message, req.ip);
     res.status(500).json({ message: "Server error" });
@@ -98,7 +98,7 @@ export const createUser = async (req, res) => {
  * }
  */
 export const updateUser = async (req, res) => {
-  const { id, username: newUsername, email: newEmail, password: newPassword, role: newRole, isVerified: newIsVerified } = req.body;
+  const { userId, username: newUsername, email: newEmail, password: newPassword, role: newRole, isVerified: newIsVerified } = req.body;
 
   const updateData = {};
 
@@ -109,7 +109,7 @@ export const updateUser = async (req, res) => {
   if (newIsVerified !== undefined) updateData.isVerified = newIsVerified;
 
   try {
-    const user = await User.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
+    const user = await User.findByIdAndUpdate(userId, updateData, { new: true, runValidators: true });
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
