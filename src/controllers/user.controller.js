@@ -42,28 +42,52 @@ export const getProfile = async (req, res) => {
  * @description Update the profile of the currently logged in user
  * @route PUT /user/profile
  * @access User
- * @param {string} firstName - New first name of the user
- * @param {string} lastName - New last name of the user
- * @param {string} username - New username of the user
- * @returns {object} Message indicating profile was updated successfully and the updated user object
+ * @param {string} [username] - New username
+ * @param {string} [firstName] - New first name
+ * @param {string} [lastName] - New last name
+ * @param {string} [email] - New email
+ * @param {string} [password] - New password
+ * @returns {object} Message indicating user was updated successfully
+ * @example
+ * // Request
+ * PUT /user/profile HTTP/1.1
+ * Content-Type: application/json
+ * {
+ *   "username": "newtestuser",
+ *   "firstName": "newFirst",
+ *   "lastName": "newLast",
+ *   "email": "newtestuser@example.com",
+ *   "password": "newtestpassword"
+ * }
+ *
+ * // Response
+ * HTTP/1.1 200 OK
+ * {
+ *   "message": "User updated successfully"
+ * }
  */
+export const updateUser = async (req, res) => {
+  const { userId, username: newUsername, firstName: newFirstName, lastName: newLastName, email: newEmail } = req.body;
 
-export const updateProfile = async (req, res) => {
+  const updateData = {};
+
+  if (newUsername) updateData.username = newUsername;
+  if (newEmail) updateData.email = newEmail;
+  if (newFirstName) updateData.firstName = newFirstName;
+  if (newLastName) updateData.lastName = newLastName;
+  if (newPassword) updateData.password = await bcrypt.hash(newPassword, 10);
+
   try {
-    const userId = req.user.userId;
-    const { firstName, lastName, username } = req.body;
+    const user = await User.findByIdAndUpdate(userId, updateData, { new: true, runValidators: true });
 
-    const updatedUser = await User.findByIdAndUpdate(userId, { firstName, lastName, username }, { new: true, runValidators: true }).select(
-      "-password -verificationToken -resetToken -resetTokenExpiration"
-    );
-
-    if (!updatedUser) {
+    if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    res.status(200).json({ message: "Profile updated successfully", user: updatedUser });
+    logAudit(req.user.username, "user_update_profile", `Updated user ${user.username} with role ${user.role}`, req.ip);
+    res.status(200).json({ message: "User updated successfully" });
   } catch (error) {
-    console.error(error);
+    logAudit(req.user.username, "user_update_error", error.message, req.ip);
     res.status(500).json({ message: "Server error" });
   }
 };
