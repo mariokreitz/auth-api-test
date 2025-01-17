@@ -223,8 +223,12 @@ export const resetPassword = async (req, res) => {
   const { token } = req.query;
   const { password } = req.body;
 
+  if (typeof token !== "string") {
+    return res.status(400).json({ message: "Invalid token" });
+  }
+
   try {
-    const user = await User.findOne({ resetToken: token, resetTokenExpiration: { $gt: Date.now() } });
+    const user = await User.findOne({ resetToken: { $eq: token }, resetTokenExpiration: { $gt: Date.now() } });
     if (!user) {
       return res.status(400).json({ message: "Invalid or expired token" });
     }
