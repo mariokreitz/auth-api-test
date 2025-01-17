@@ -15,13 +15,14 @@ import session from "express-session";
 
 const app = express();
 
+const corsOptions = {
+  origin: true,
+  credentials: true,
+};
+
+// Middleware
 app.use(helmet());
-app.use(
-  cors({
-    origin: true,
-    credentials: true,
-  })
-);
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -33,18 +34,45 @@ app.use(
     cookie: { secure: process.env.NODE_ENV === "production" },
   })
 );
-app.use(lusca.csrf());
+
+// CSRF protection middleware
+// app.use(lusca.csrf());
+// app.use((req, res, next) => {
+//   const csrfToken = req.csrfToken();
+//   res.locals.csrfToken = csrfToken;
+//   next();
+// });
+
+// Custom middleware
 app.use(requestLogger);
 app.use(errorHandler);
 app.use(limiter);
 
+// Routes
 app.use("/auth", authRoutes);
 app.use("/session", verifyToken, sessionRoutes);
 app.use("/user", verifyToken, userRoutes);
 app.use("/admin", verifyToken, adminRoutes);
 
+// Default route
 app.get("/", (req, res) => {
-  res.send("Auth API is up and running!");
+  try {
+    // const csrfToken = req.csrfToken();
+
+    // res.cookie("csrfToken", csrfToken, {
+    //   httpOnly: true,
+    //   secure: process.env.NODE_ENV === "production",
+    //   sameSite: "None",
+    //   maxAge: 3600000, // 1 Stunde
+    // });
+
+    res.status(200).json({
+      message: "CSRF Token gesetzt und Anfrage erfolgreich",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
 });
 
 export default app;
