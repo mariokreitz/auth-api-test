@@ -145,8 +145,12 @@ export const updateUser = async (req, res) => {
 export const deleteUser = async (req, res) => {
   const { userId } = req.body;
 
+  if (typeof userId !== "string") {
+    return res.status(400).json({ message: "Invalid user ID" });
+  }
+
   try {
-    const user = await User.findByIdAndDelete(userId);
+    const user = await User.findByIdAndDelete({ _id: { $eq: userId } });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
