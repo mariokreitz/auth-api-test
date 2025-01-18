@@ -66,8 +66,11 @@ app.get("/", (req, res) => {
     //   maxAge: 3600000, // 1 Stunde
     // });
 
+    // res.status(200).json({
+    //   message: "CSRF Token gesetzt und Anfrage erfolgreich",
+    // });
     res.status(200).json({
-      message: "CSRF Token gesetzt und Anfrage erfolgreich",
+      message: "API is up and running!",
     });
   } catch (error) {
     console.error(error);

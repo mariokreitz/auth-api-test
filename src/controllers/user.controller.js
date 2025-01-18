@@ -68,7 +68,14 @@ export const getProfile = async (req, res) => {
  * }
  */
 export const updateUser = async (req, res) => {
-  const { userId, username: newUsername, firstName: newFirstName, lastName: newLastName, email: newEmail, password: newPassword } = req.body;
+  const {
+    userId,
+    username: newUsername,
+    firstName: newFirstName,
+    lastName: newLastName,
+    email: newEmail,
+    password: newPassword,
+  } = req.body;
 
   if (!mongoose.Types.ObjectId.isValid(userId)) {
     return res.status(400).json({ message: "Invalid user ID" });
@@ -76,11 +83,11 @@ export const updateUser = async (req, res) => {
 
   const updateData = {};
 
-  if (newUsername && typeof newUsername === 'string') updateData.username = newUsername;
-  if (newEmail && typeof newEmail === 'string') updateData.email = newEmail;
-  if (newFirstName && typeof newFirstName === 'string') updateData.firstName = newFirstName;
-  if (newLastName && typeof newLastName === 'string') updateData.lastName = newLastName;
-  if (newPassword && typeof newPassword === 'string') updateData.password = await bcrypt.hash(newPassword, 10);
+  if (newUsername && typeof newUsername === "string") updateData.username = newUsername;
+  if (newEmail && typeof newEmail === "string") updateData.email = newEmail;
+  if (newFirstName && typeof newFirstName === "string") updateData.firstName = newFirstName;
+  if (newLastName && typeof newLastName === "string") updateData.lastName = newLastName;
+  if (newPassword && typeof newPassword === "string") updateData.password = await bcrypt.hash(newPassword, 10);
 
   try {
     const user = await User.findByIdAndUpdate(userId, updateData, { new: true, runValidators: true });
