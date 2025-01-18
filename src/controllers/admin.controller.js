@@ -117,13 +117,13 @@ export const updateUser = async (req, res) => {
 
   const updateData = {};
 
-  if (newUsername && typeof newUsername === 'string') updateData.username = newUsername;
-  if (newEmail && typeof newEmail === 'string') updateData.email = newEmail;
-  if (newFirstName && typeof newFirstName === 'string') updateData.firstName = newFirstName;
-  if (newLastName && typeof newLastName === 'string') updateData.lastName = newLastName;
-  if (newPassword && typeof newPassword === 'string') updateData.password = await bcrypt.hash(newPassword, 10);
-  if (newRole && typeof newRole === 'string') updateData.role = newRole;
-  if (newIsVerified !== undefined && typeof newIsVerified === 'boolean') updateData.isVerified = newIsVerified;
+  if (newUsername && typeof newUsername === "string") updateData.username = newUsername;
+  if (newEmail && typeof newEmail === "string") updateData.email = newEmail;
+  if (newFirstName && typeof newFirstName === "string") updateData.firstName = newFirstName;
+  if (newLastName && typeof newLastName === "string") updateData.lastName = newLastName;
+  if (newPassword && typeof newPassword === "string") updateData.password = await bcrypt.hash(newPassword, 10);
+  if (newRole && typeof newRole === "string") updateData.role = newRole;
+  if (newIsVerified !== undefined && typeof newIsVerified === "boolean") updateData.isVerified = newIsVerified;
 
   try {
     const user = await User.findByIdAndUpdate(userId, updateData, { new: true, runValidators: true });
@@ -150,12 +150,12 @@ export const updateUser = async (req, res) => {
 export const deleteUser = async (req, res) => {
   const { userId } = req.body;
 
-  if (typeof userId !== "string") {
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
     return res.status(400).json({ message: "Invalid user ID" });
   }
 
   try {
-    const user = await User.findByIdAndDelete({ _id: { $eq: userId } });
+    const user = await User.findByIdAndDelete({ _id: userId });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
